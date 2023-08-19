@@ -1,7 +1,7 @@
 ---
-title: "Example Manuscript Template for a Data Analysis Project"
-subtitle: ""
-author: Andreas Handel
+title: "Manuscript for Vijay Panthayi's Data Analysis Project"
+subtitle: "Analysis of Climate Change, Forest, and Carbon Stocks Data"
+author: Vijay Panthayi
 date: "`r Sys.Date()`"
 format:
   docx:
@@ -11,11 +11,9 @@ format:
 bibliography: ../dataanalysis_template_references.bib
 csl: ../apa.csl
 ---
+#Preface
 
-The structure below is one possible setup for a data analysis project (including the course project). For a manuscript, adjust as needed. 
-You don't need to have exactly these sections, but the content covering those sections should be addressed.
-
-This uses MS Word as output format. [See here](https://quarto.org/docs/output-formats/ms-word.html) for more information. You can switch to other formats, like html or pdf. See [the Quarto documentation](https://quarto.org/) for other formats.
+Hello! My name is Vijay Panthayi. The following is the complete Manuscript for my MADA Data Analysis Final Project. This project will explore Climate Change, Forest Area, and Carbon Stock data obtained from IMF. Outlined below are the steps and information needed to both understand and fully reproduce the analysis. Thank you for your time.
 
 
 ```{r, echo=FALSE, message=FALSE}
@@ -36,13 +34,23 @@ _Write a summary of your project._
 # Introduction 
 
 ## General Background Information
-_Provide enough background on your topic that others can understand the why and how of your analysis_ 
+Climate change is the term coined to represent the long-term changes, or shifts, in temperatures and weather patterns across the globe. For the longest time, the Earth has been in a constant pattern of climate change as there was equal fluctuation of carbon exchange between the atmosphere, water, and ground. However, since the 1800s, human activity has been a direct factor of climate change's rapid increase from the norm. This is primarily due to the burning of fossil fuels (coal, oil, gas) which produces heat-trapping gasses. Over time, as these heat-trapping gasses accumulate in the atmosphere, more and more heat from the Sun is retained on the Earth causing it's global temperatures to increase yearly. Aside from data showing that global temperatures are rising across the board, we have also experienced the five hottest months on Earth ever in only the last 5 years. This gives protecting our Earth a whole new level of importance, and with that, means studying the data behind it important too.
+
+The primary method of preventing our planet from becoming the next Sun in the solar system is to reduce the amount of emissions humans produce. Switching to renewable energy sources (solar and/or wind) is a fantastic way of reducing the amount humans contribute to climate change. However, it is also important to study the way the planet has naturally dealt with the carbon cycle prior to human impact. Plants, through photosynthesis, consume carbon dioxide through a series of chemical reactions to produce oxygen, energy, and by-products. A large amount of plants, say a forest, would have a large impact in the consumption of emissions thrown into the atmosphere. In fact, forests contain the largest stock of land-based carbon. It is also important to study forest area and their carbon stock to have a deeper understanding of climate change and its factors and solutions.
 
 ## Description of data and data source
-_Describe what the data is, what it contains, where it is from, etc. Eventually this might be part of a methods section._
+The data being explored in this project comes from IMF (International Monetary Fund). The IMF is a major financial agency of the United Nations consisting of 190 countries. Its mission is "working to foster global monetary cooperation, secure financial stability, facilitate international trade, promote high employment and sustainable growth, and reduce poverty around the world". The IMF works towards their mission by surveillance of its members' economies and demands of particular policies through the actions and activities of funds and gathering  statistics and analysis.
+
+There are two data sets obtained from the IMF data website that will be explored in this project. The first data set is of Annual Surface Temperature Change. This sheet contains the mean surface temperature change during 1961-2021 compared to the baseline temperatures of 1951-1980. There are 225 observations. This data is obtained for multiple countries across the globe and contains the temperature changes yearly in Celsius. This data is provided to the IMF by the Food and Agriculture Organization Corporate Statistical Database (FAOSTAT) and is based on publicly available GISTEMP data from the National Aeronautics and Space Administration Goddard Institute for Space Studies (NASA GISS). The second data set is Forest and Carbon. This sheet contains the % share of forest area, carbon stock index, and carbon stock in forests values for most countries in the world from 1992 to 2020. There are 1353 observations. Each subject (country) takes up approximately 6 observations for each of the following per country: carbon stocks in forest, forest area, index of carbon stocks in forests, index of forest extent, land area, share of forest area. When considering that each subject conjures approximately 6 observations, there are approximately 226 subjects (same number of countries in the temperature set plus one for global).
 
 ## Questions/Hypotheses to be addressed
-_State the research questions you plan to answer with this analysis._
+The questions/hypotheses to be addressed are the following:
+    1. Which countries/areas around the globe are experiencing the largest changes in climate? (Are there similarities amongst them?)
+    2. Is there a correlation between % share of forest and temperature change experienced?
+    3. What are future implications of not changing anything about how we run the world?
+    
+    
+    
 
 To cite other work (important everywhere, but likely happens first in introduction), make sure your references are in the bibtex file specified in the YAML header above (here `dataanalysis_template_references.bib`) and have the right bibtex key. Then you can include like this:
 
