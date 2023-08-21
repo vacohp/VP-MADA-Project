@@ -61,9 +61,6 @@ Examples of reproducible research projects can for instance be found in [@mckay2
 
 # Methods 
 
-_Describe your methods. That should describe the data, the cleaning processes, and the analysis approaches. You might want to provide a shorter description here and all the details in the supplement._
-
-
 ## Data aquisition
 Both the data sets were acquired from the IMF climate change dashboard website. This website can be found here: https://climatedata.imf.org/pages/climatechange-data . The two data sets used were labeled "Annual Surface Temperature Change" and "Forest and Carbon". 
 
@@ -73,7 +70,7 @@ The data importing, cleaning, and processing was done in a QMD file that can be 
 
 
 ## Statistical analysis
-_Explain anything related to your statistical analyses._
+First, an analysis of covariance was performed to determine if there were similar trends in climate change temperature and forest area/index changes over time. Afterwards, a train/test method analysis was performed on the data. Further steps and explanations can be found in the Code > analysis_code > analysis_code.qmd file.
 
 
 {{< pagebreak >}}

@@ -5,17 +5,37 @@
 #and saves the results to the results folder
 
 #load needed packages. make sure they are installed.
-library(ggplot2) #for plotting
-library(broom) #for cleaning up output from lm()
 library(here) #for data loading/saving
+library(dplyr)
+library(skimr)
+library(ggplot2)
+library(tidyverse)
+library(tidyr)
+library(ggrepel)
+library(ggtext)
+library(ggpubr)
+library(recipes)
+library(parsnip)
+library(performance)
+library(dotwhisker)
+library(caret)
 
 #path to data
-#note the use of the here() package and not absolute paths
-data_location <- here::here("data","processed_data","processeddata.rds")
-
-#load data. 
-mydata <- readRDS(data_location)
-
+data_location1 <- here::here("data","processed_data","carbon_index_data.rds")
+data_location2 <- here::here("data","processed_data","carbon_stock_data.rds")
+data_location3 <- here::here("data","processed_data","forest_area_data.rds")
+data_location4 <- here::here("data","processed_data","forest_index_data.rds")
+data_location5 <- here::here("data","processed_data","forest_share_data.rds")
+data_location6 <- here::here("data","processed_data","land_area_data.rds")
+data_location7 <- here::here("data","processed_data","temp_data_clean.rds")
+#load data
+carbon_index <- readRDS(data_location1)
+carbon_stock <- readRDS(data_location2)
+forest_area <- readRDS(data_location3)
+forest_index <- readRDS(data_location4)
+forest_share <- readRDS(data_location5)
+land_area <- readRDS(data_location6)
+temperature <- readRDS(data_location7)
 
 ######################################
 #Data fitting/statistical analysis
@@ -23,34 +43,83 @@ mydata <- readRDS(data_location)
 
 ############################
 #### First model fit
-# fit linear model using height as outcome, weight as predictor
+# Let's re-create the graphs made during the exploratory step, but add a bit of analysis to them.
 
-lmfit1 <- lm(Height ~ Weight, mydata)  
+temp_organized = subset(temperature, select = -c(ObjectId))
+temp_organized <- gather(temp_organized, key = "Year", value = "Temperature Change", 2:63)
 
-# place results from fit into a data frame with the tidy function
-lmtable1 <- broom::tidy(lmfit1)
+# Basic line plot with points
+temp_base_plot <- ggplot(data=temp_organized, aes(x=Year, y=`Temperature Change`, group = Country)) +
+  geom_line()+
+  geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  geom_smooth(method=lm, se=FALSE, col='purple', linetype = 'dashed')
 
-#look at fit results
-print(lmtable1)
+plot(temp_base_plot)
 
-# save fit results table  
-table_file1 = here("results", "resulttable1.rds")
-saveRDS(lmtable1, file = table_file1)
+#Create a summary table of all plot points
+summary_temp_figure <- summary(lm(`Temperature Change` ~ Year, temp_organized))$coefficients
+summarytable_file_temp = here("results", "summary_temp_figure.rds")
+saveRDS(summary_temp_figure, file = summarytable_file_temp)
 
-############################
-#### Second model fit
-# fit linear model using height as outcome, weight and gender as predictor
 
-lmfit2 <- lm(Height ~ Weight + Gender, mydata)  
+#Now, let's perform a one-sample t-test on the temperature data to see if it statistically deviates from a temperature change of 0. (this would indicate global warming)
+ttest <- t.test(temp_organized$`Temperature Change`, mu = 0)
+ttest
+ttest_temp = here("results","ttest_temp.rds")
+saveRDS(ttest_temp, file = ttest_temp)
 
-# place results from fit into a data frame with the tidy function
-lmtable2 <- broom::tidy(lmfit2)
+#Let's see if we can compare the temperature changes between two years: 1979 and 2010
+linear <- linear_reg() %>%  
+  set_engine("lm")
+logistic <- logistic_reg() %>%
+  set_engine("glm")
 
-#look at fit results
-print(lmtable2)
+lm_fit_7910 <- linear %>%
+                        fit(F1979~F2010, data = temperature)
+lm_fit_7910
 
-# save fit results table  
-table_file2 = here("results", "resulttable2.rds")
-saveRDS(lmtable2, file = table_file2)
+#We can also try comparing the most recent year's data to all other years
+lm_fit_2020 <- linear %>%
+                fit(F2020~., data = temperature)
+lm_fit_2020
 
-  
+
+# Cross-validation of temperature data set
+# R program to implement
+# validation set approach
+
+# setting seed to generate a
+# reproducible random sampling
+set.seed(123)
+
+# creating training data as 80% of the dataset
+random_sample <- createDataPartition(temp_organized $ `Temperature Change`,
+                                     p = 0.8, list = FALSE)
+
+# generating training dataset
+# from the random_sample
+training_dataset  <- temp_organized[random_sample, ]
+
+# generating testing dataset
+# from rows which are not
+# included in random_sample
+testing_dataset <- temp_organized[-random_sample, ]
+
+# Building the model
+
+# training the model by assigning sales column
+# as target variable and rest other columns
+# as independent variables
+model <- lm(`Temperature Change` ~., data = training_dataset)
+
+# predicting the target variable
+predictions <- predict(model, testing_dataset)
+
+# computing model performance metrics
+data.frame( R2 = R2(predictions, testing_dataset $ `Temperature Change`),
+            RMSE = RMSE(predictions, testing_dataset $ `Temperature Change`),
+            MAE = MAE(predictions, testing_dataset $ `Temperature Change`))
+
+
+#We can also try to compare the temperature change data with the forest data. We can do this by performing a comparison between a specific country. 
+#We will use the United States for this test
