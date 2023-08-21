@@ -1,35 +1,33 @@
-# Overview
+## Project structure
 
-A template file and folder structure for a data analysis project/paper done with R/Quarto/Github. 
+-   The data can be located in the data folder with sub-folders for raw data and processed data.
 
-# Pre-requisites
+-   The code can be located in the code folder with various sub-folders
 
-This is a template for a data analysis project using R, Quarto, Github and a reference manager that can handle bibtex. It is also assumed that you have a word processor installed (e.g. MS Word or [LibreOffice](https://www.libreoffice.org/)). You need that software stack to make use of this template.
+-   The results can be located in the figures folder with sub-folders for figures, tables, and computed values
 
-# Template structure
+-   The manuscripts and supplementary materials are located in the products folder
 
-* All data goes into the subfolders inside the `data` folder.
-* All code goes into the `code` folder or subfolders.
-* All results (figures, tables, computed values) go into `results` folder or subfolders.
-* All products (manuscripts, supplement, presentation slides, web apps, etc.) go into `products` subfolders.
-* See the various `readme.md` files in those folders for some more information.
+-    There is a README file located in each folder with short summaries of what is in its respective folder and any additional information
 
-# Template content 
+## Instructions for reproduction
 
-The template comes with a few files that are meant as illustrative examples of the kinds of content you would place in the different folders. See the `readme` files in each folder for more details.
+### Data loading and processing
 
-* There is a simple, made-up dataset in the `raw_data` folder. 
-* The `processing_code` folder contains several files that load the raw data, perform a bit of cleaning, and save the result in the `processed_data` folder. 
-* The `analysis_code` folder contains several files that load the processed data, do an exploratory analysis, and fit a simple model. These files produce figures and some numeric output (tables), which are saved to the `results` folder.
-* The `products` folder contains an example `bibtex` and CSL style files for references. Those files are used by the example manuscript and slides.
-* The  `manuscript` folder contains a template for a report written as Quarto file. If you access this repository as part of [my Modern Applied Data Science course](https://andreashandel.github.io/MADAcourse/), the sections are guides for your project. If you found your way to this repository outside the course, you might only be interested in seeing how the file pulls in results and references and generates a word document as output, without paying attention to the detailed structure. There is also a sub-folder containing an example template for a supplementary material file.
-* The `slides` folder contains a basic example of slides made with Quarto. 
+Go to `Code` \> `processing_code` and locate the `processing_code.qmd` file and run the entire script. This will save all necessary output files that you will need to load for the exploratory analysis.
 
+### Exploratory analysis
 
-# Getting started
+Go to `Code` \> `analysis_code` and locate the `exploratory_analysis.qmd` file. This will create figures of simple analysis of the processed data.
 
-This is a Github template repository. The best way to get it and start using it is [by following these steps.](https://help.github.com/en/articles/creating-a-repository-from-a-template)
+### Model fitting
 
-Once you got the repository, you can check out the examples by executing them in order. First run the processing code, which will produce the processed data. Then run the analysis scripts, which will take the processed data and produce some results. Then you can run the manuscript, poster and slides example files in any order. Those files pull in the generated results and display them. These files also pull in references from the `bibtex` file and format them according to the CSL style.
+Go to `code` \> `modeling_code` \> `data_splitting.Rmd` first to split the data into train and test sets before running the rest of the scripts.
 
+Each file ending in "model.Rmd" runs a script that fits and evaluates a model for each combination of predictor and outcome.
 
+### Manuscript
+
+To look at the manuscript file, please go to `products` \> `manuscript` \> `Manuscript.html` and download the .html file. I will change this back to a .docx file in the future, but for editing purposes I will have it saved as a .html.
+
+To reproduce the `Manuscript.qmd`, you will first need to run `processing.qmd` and `exploratory_analysis.qmd`. This will allow you to produce the tables and figures associated with the manuscript.
