@@ -137,7 +137,41 @@ It's a bit crowded, but we can see that generally there is an upward trend as th
 
 Now let's look at what graphs we can make with the Forest and Carbon data.
 
-We will focus on the Forest Area and Carbon Index data sets.
+We will focus on the Forest Area and Carbon Stocks data sets. 
 
+Let's start with the Carbon Stocks. Stocks in this case refers to the amount of carbon stored in a particular system measured in million tonnes. We can first start with a similar graph as the temperature change one to see if there is a general trend amongst the data over time.
+
+```{r}
+carbon_stock_organized = subset(carbon_stock, select = -c(ObjectId, ISO2, ISO3, Indicator, Unit, Source))
+carbon_stock_organized <- gather(carbon_stock_organized, key = "Year", value = "Stock", 2:30)
+
+# Basic line plot with points
+carbon_stock_base_plot <- ggplot(data=carbon_stock_organized, aes(x=Year, y=Stock, group = Country)) +
+  geom_line()+
+  geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+plot(carbon_stock_base_plot)
+
+figure_file2 = here("results","carbon_stock_plot.png")
+ggsave(filename = figure_file2, plot=carbon_stock_base_plot) 
+```
+We can see from this that there are quite a few outliers when it comes to their carbon stock. Further inspection of the table shows that these correlate with the values of World and continents, which makes sense why they are higher due to being a accumulative of their countries' stocks. There doesn't seem to be a general trend upwards or downwards over time, however.
+
+
+```{r}
+forest_area_organized = subset(forest_area, select = -c(ObjectId, ISO2, ISO3, Indicator, Unit, Source))
+forest_area_organized <- gather(forest_area_organized, key = "Year", value = "Area", 2:30)
+
+# Basic line plot with points
+forest_area_base_plot <- ggplot(data=forest_area_organized, aes(x=Year, y=Area, group = Country)) +
+  geom_line()+
+  geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+plot(forest_area_base_plot)
+
+figure_file3 = here("results","forest_area_plot.png")
+ggsave(filename = figure_file3, plot=forest_area_base_plot) 
+```
+This looks very similar to the previous graph. There are no trends noticibile, but there are outliers in the data across all the years. These, however, turn out to be the larger groups (world, continents), and ultimately consist of the accumulative values of their respective countries.
 
 
