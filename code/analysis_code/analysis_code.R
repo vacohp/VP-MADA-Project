@@ -19,6 +19,7 @@ library(parsnip)
 library(performance)
 library(dotwhisker)
 library(caret)
+library(arsenal)
 
 #path to data
 data_location1 <- here::here("data","processed_data","carbon_index_data.rds")
@@ -121,5 +122,35 @@ data.frame( R2 = R2(predictions, testing_dataset $ `Temperature Change`),
             MAE = MAE(predictions, testing_dataset $ `Temperature Change`))
 
 
-#We can also try to compare the temperature change data with the forest data. We can do this by performing a comparison between a specific country. 
-#We will use the United States for this test
+#We can also try to compare the temperature change data with the forest data. 
+summary_temp_forest <- summary(comparedf(temperature, forest_area))
+summarytable_file_temp_forest = here("results", "summary_temp_forest.rds")
+saveRDS(summary_temp_forest, file = summarytable_file_temp_forest)
+
+#Let's graph the Forest Area and assign a line of best fit to each country to see if there are trends.
+forest_area_organized = subset(forest_area, select = -c(ObjectId, ISO2, ISO3, Indicator, Unit, Source))
+forest_area_organized <- gather(forest_area_organized, key = "Year", value = "Area", 2:30)
+
+# Basic line plot with points
+forest_area_base_plot <- ggplot(data=forest_area_organized, aes(x=Year, y= Area, group = Country)) +
+  geom_line()+
+  geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+
+  geom_smooth(method=lm, se=FALSE, col='purple', linetype = 'dashed')
+
+forest_area_base_plot
+
+summary_forest_area_figure <- summary(lm(Area ~ Year, forest_area_organized))$coefficients
+summary_forest_area_figure
+
+#Let's try a comparison between the forest area and temperature with just one country. We will use the United States for this example.
+#We will do this by performing an ANCOVA (analysis of covariance) to compare the slopes and intercepts of the two data sets
+US_temp <- temperature[temperature$Country == "United States",]
+US_forest_area <- forest_area[forest_area$Country == "United States",]
+
+US_temp = subset(US_temp, select = -c(ObjectId))
+US_temp <- gather(US_temp, key = "Year", value = "Temperature Change", 2:63)
+
+US_forest_area = subset(US_forest_area, select = -c(ObjectId, ISO2, ISO3, Indicator, Unit, Source))
+US_forest_area <- gather(US_forest_area, key = "Year", value = "Area", 2:30)
+
+ACOVAmodel <- aov()
