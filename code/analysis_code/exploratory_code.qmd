@@ -1,0 +1,143 @@
+---
+title: "Exploratory Analysis Script"
+author: "Vijay Panthayi"
+date: "08/20/2023"
+output: html_document
+---
+
+#Preface
+
+This Quarto file loads the cleaned data and does some exploring.
+
+
+# Setup
+
+```{r}
+#load needed packages. make sure they are installed.
+library(here) #for data loading/saving
+library(dplyr)
+library(skimr)
+library(ggplot2)
+library(tidyverse)
+library(tidyr)
+library(ggrepel)
+library(ggtext)
+```
+
+First we need to load the cleaned data.
+
+```{r}
+#Path to data
+data_location1 <- here::here("data","processed_data","carbon_index_data.rds")
+data_location2 <- here::here("data","processed_data","carbon_stock_data.rds")
+data_location3 <- here::here("data","processed_data","forest_area_data.rds")
+data_location4 <- here::here("data","processed_data","forest_index_data.rds")
+data_location5 <- here::here("data","processed_data","forest_share_data.rds")
+data_location6 <- here::here("data","processed_data","land_area_data.rds")
+data_location7 <- here::here("data","processed_data","temp_data_clean.rds")
+#load data
+carbon_index <- readRDS(data_location1)
+carbon_stock <- readRDS(data_location2)
+forest_area <- readRDS(data_location3)
+forest_index <- readRDS(data_location4)
+forest_share <- readRDS(data_location5)
+land_area <- readRDS(data_location6)
+temperature <- readRDS(data_location7)
+```
+
+
+# Data exploration through tables
+
+Let's start with the climate change temperature data sheet.
+
+Showing a bit of code to produce and save a summary table.
+
+```{r}
+summary_temp = skimr::skim(temperature)
+print(summary_temp)
+# save to file
+summarytable_file = here("results", "summary_temp_table.rds")
+saveRDS(summary_temp, file = summarytable_file)
+```
+
+We can take this time to conjure up a summary table for all the Forest and Carbon data sheets.
+
+```{r}
+#carbon_index data
+summary_carbon_index = skimr::skim(carbon_index)
+print(summary_carbon_index)
+# save to file
+summarytable_file2 = here("results", "summary_carbon_index_table.rds")
+saveRDS(summary_carbon_index, file = summarytable_file2)
+```
+```{r}
+#carbon_stock data
+summary_carbon_stock = skimr::skim(carbon_stock)
+print(summary_carbon_stock)
+# save to file
+summarytable_file3 = here("results", "summary_carbon_stock_table.rds")
+saveRDS(summary_carbon_stock, file = summarytable_file3)
+```
+```{r}
+#forest_area data
+summary_forest_area = skimr::skim(forest_area)
+print(summary_forest_area)
+# save to file
+summarytable_file3 = here("results", "summary_forest_area_table.rds")
+saveRDS(summary_forest_area, file = summarytable_file3)
+```
+```{r}
+#forest_index data
+summary_forest_index = skimr::skim(forest_index)
+print(summary_forest_index)
+# save to file
+summarytable_file4 = here("results", "summary_forest_index_table.rds")
+saveRDS(summary_forest_index, file = summarytable_file4)
+```
+```{r}
+#forest_share data
+summary_forest_share = skimr::skim(forest_share)
+print(summary_forest_share)
+# save to file
+summarytable_file5 = here("results", "summary_forest_share_table.rds")
+saveRDS(summary_forest_share, file = summarytable_file5)
+```
+```{r}
+#land_area data
+summary_land_area = skimr::skim(land_area)
+print(summary_land_area)
+# save to file
+summarytable_file6 = here("results", "summary_land_area_table.rds")
+saveRDS(summary_land_area, file = summarytable_file6)
+```
+
+
+# Data exploration through figures
+
+Now we can explore these data sets through figures. 
+
+It may look confusing or crowded, but let's try getting a line plot showing the climate change over time for each country.
+
+```{r}
+temp_organized = subset(temperature, select = -c(ObjectId))
+temp_organized <- gather(temp_organized, key = "Year", value = "Temperature Change", 2:63)
+
+# Basic line plot with points
+temp_base_plot <- ggplot(data=temp_organized, aes(x=Year, y=`Temperature Change`, group = Country)) +
+  geom_line()+
+  geom_point() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+plot(temp_base_plot)
+
+figure_file = here("results","temperature_plot.png")
+ggsave(filename = figure_file, plot=temp_base_plot) 
+
+```
+It's a bit crowded, but we can see that generally there is an upward trend as the years approach modern day.
+
+Now let's look at what graphs we can make with the Forest and Carbon data.
+
+We will focus on the Forest Area and Carbon Index data sets.
+
+
+
